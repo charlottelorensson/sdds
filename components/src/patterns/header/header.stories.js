@@ -1,3 +1,4 @@
+import { useArgs } from '@storybook/client-api';
 import readme from './readme.md';
 
 export default {
@@ -13,20 +14,14 @@ export default {
   },
 };
 
-const Template = ({
-  siteName,
-  openInlineDropdown = true,
-  openAppLauncher = false,
-  openAvatarMenu = false,
-  openMobileMenu = false,
-}) => {
-  const InlineDropdownActiveClass = openInlineDropdown
-    ? 'sdds-nav__dropdown--opened'
-    : '';
-
-  const AppLauncherActiveClass = openAppLauncher
-    ? 'sdds-nav__app-launcher--opened'
-    : '';
+const Template = (args) => {
+  const {
+    siteName,
+    openInlineDropdown = true,
+    openAppLauncher = false,
+    openAvatarMenu = false,
+    openMobileMenu = false,
+  } = args;
 
   const AvatarMenuActiveClass = openAvatarMenu
     ? 'sdds-nav__avatar--opened'
@@ -36,13 +31,39 @@ const Template = ({
     ? 'sdds_nav--mob-menu-active'
     : '';
 
+  const [_, setArgs] = useArgs();
+
+  window.toggleAppLauncher = (event) => {
+    event.preventDefault();
+    setArgs({ ...args, openAppLauncher: !openAppLauncher });
+  };
+
+  window.toggleInlineDropdown = (event) => {
+    event.preventDefault();
+    setArgs({ ...args, openInlineDropdown: !openInlineDropdown });
+  };
+
+  window.toggleAvatarMenu = (event) => {
+    event.preventDefault();
+    setArgs({ ...args, openAvatarMenu: !openAvatarMenu });
+  };
+
+  window.toggleMobileMenu = (event) => {
+    event.preventDefault();
+    setArgs({ ...args, openMobileMenu: !openMobileMenu });
+  };
+
   return `
   <sdds-theme></sdds-theme>
 
-  <nav class='sdds-nav  ${MobileMenuActiveClass}'>     
+  <nav class='  
+    ${openMobileMenu && 'sdds-nav__mob-menu--opened'} 
+    ${openAvatarMenu && 'sdds-nav__avatar--opened'}
+    ${openAppLauncher && 'sdds-nav__app-launcher--opened'}
+     sdds-nav'>     
   
     <div class='sdds-nav__left'>
-      <button class='sdds_nav__mob-menu-btn'>
+      <button class='sdds-nav__mob-menu-btn' onclick='toggleMobileMenu(event)'>
        <div id='sdds-nav__mob-menu-icon'>
           <span class='sdds-nav__mob-menu-icon-line' id='sdds-nav__mob-menu-icon-line-1'></span>
           <span class='sdds-nav__mob-menu-icon-line' id='sdds-nav__mob-menu-icon-line-2'></span>
@@ -50,8 +71,7 @@ const Template = ({
         </div>
       </button>
       <div class='sdds-nav__app-name'>${siteName}</div>
-    </div>
-  
+    </div>  
 
     
     <div class='sdds-nav__center'>
@@ -75,8 +95,10 @@ const Template = ({
             </a>
           </li>
           
-          <li class='sdds-nav__item sdds-nav__dropdown ${InlineDropdownActiveClass}'>  
-              <button class='sdds-nav__link'>
+          <li class='sdds-nav__item sdds-nav__dropdown ${
+            openInlineDropdown && 'sdds-nav__dropdown--opened'
+          }'>  
+              <button class='sdds-nav__link' onclick='toggleInlineDropdown(event)'>
                 <span class='sdds-nav__link-icon'>
                   <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' style='enable-background:new 0 0 256 256' xml:space='preserve'><path style='fill:currentColor' d='M236.67 107.34 128.96 36.52l-.03-.04-.01.01h-.01l-108.64 71 5.47 8.36 14.93-9.75v113.23h67v-60.66H150v60.66h67V106.37l14.18 9.33 5.5-8.36zm-29.67 102h-47v-60.67H97.67v60.66h-47V99.67h-.16l78.39-51.22L207 99.8v109.53z'/></svg>
                 </span> 
@@ -104,8 +126,8 @@ const Template = ({
         </a>
       </li> 
       
-      <li class='sdds-nav__item sdds-nav__avatar ${AvatarMenuActiveClass}'>
-        <button class='sdds-nav__avatar-btn'>
+      <li class='sdds-nav__item sdds-nav__avatar' >
+        <button class='sdds-nav__avatar-btn' onclick='toggleAvatarMenu(event)'>
           <img src='https://www.svgrepo.com/show/170303/avatar.svg' alt='profile photo'/>  
           <div class='sdds-nav__avatar-info sdds-nav__avatar-info--mobile'>
                 <p class='sdds-nav__avatar-title'>Employee Name</p>
@@ -133,8 +155,8 @@ const Template = ({
     
     <div class='sdds-nav__right'>
       
-    <div class='sdds-nav__item sdds-nav__app-launcher ${AppLauncherActiveClass}'>
-        <button class='sdds-nav__app-launcher-btn' href='#'>
+    <div class='sdds-nav__item sdds-nav__app-launcher'>
+        <button class='sdds-nav__app-launcher-btn' onclick='toggleAppLauncher(event)'>
           <svg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
             <path fill-rule='evenodd' clip-rule='evenodd' d='M1.33333 2.66667C2.06971 2.66667 2.66667 2.06971 2.66667 1.33333C2.66667 0.596954 2.06971 0 1.33333 0C0.596954 0 0 0.596954 0 1.33333C0 2.06971 0.596954 2.66667 1.33333 2.66667ZM9.33307 1.33333C9.33307 2.06971 8.73612 2.66667 7.99974 2.66667C7.26336 2.66667 6.66641 2.06971 6.66641 1.33333C6.66641 0.596954 7.26336 0 7.99974 0C8.73612 0 9.33307 0.596954 9.33307 1.33333ZM16.0003 1.33333C16.0003 2.06971 15.4033 2.66667 14.6669 2.66667C13.9305 2.66667 13.3336 2.06971 13.3336 1.33333C13.3336 0.596954 13.9305 0 14.6669 0C15.4033 0 16.0003 0.596954 16.0003 1.33333ZM16.0003 8C16.0003 8.73638 15.4033 9.33333 14.6669 9.33333C13.9305 9.33333 13.3336 8.73638 13.3336 8C13.3336 7.26362 13.9305 6.66667 14.6669 6.66667C15.4033 6.66667 16.0003 7.26362 16.0003 8ZM14.6669 16C15.4033 16 16.0003 15.403 16.0003 14.6667C16.0003 13.9303 15.4033 13.3333 14.6669 13.3333C13.9305 13.3333 13.3336 13.9303 13.3336 14.6667C13.3336 15.403 13.9305 16 14.6669 16ZM7.99974 9.33333C8.73612 9.33333 9.33307 8.73638 9.33307 8C9.33307 7.26362 8.73612 6.66667 7.99974 6.66667C7.26336 6.66667 6.66641 7.26362 6.66641 8C6.66641 8.73638 7.26336 9.33333 7.99974 9.33333ZM9.33307 14.6667C9.33307 15.403 8.73612 16 7.99974 16C7.26336 16 6.66641 15.403 6.66641 14.6667C6.66641 13.9303 7.26336 13.3333 7.99974 13.3333C8.73612 13.3333 9.33307 13.9303 9.33307 14.6667ZM2.66667 8C2.66667 8.73638 2.06971 9.33333 1.33333 9.33333C0.596954 9.33333 0 8.73638 0 8C0 7.26362 0.596954 6.66667 1.33333 6.66667C2.06971 6.66667 2.66667 7.26362 2.66667 8ZM1.33333 16C2.06971 16 2.66667 15.403 2.66667 14.6667C2.66667 13.9303 2.06971 13.3333 1.33333 13.3333C0.596954 13.3333 0 13.9303 0 14.6667C0 15.403 0.596954 16 1.33333 16Z' fill='currentColor' fill-opacity='1'/>
           </svg>
@@ -195,7 +217,7 @@ const Template = ({
 export const Default = Template.bind({});
 Default.args = {
   siteName: 'My Application',
-  openInlineDropdown: true,
+  openInlineDropdown: false,
   openAppLauncher: false,
   openAvatarMenu: false,
   openMobileMenu: false,
