@@ -26,5 +26,6 @@
     "gulp-iconfont-css": "^3.0.0",
     "svgo": "^2.3.0",
     "svgson": "^5.2.1"
-  }
+  },
+  "gitHead": "dc4d9fc4522d88d0b98fa5c2ec5a8e78f1fa9430"
 }
