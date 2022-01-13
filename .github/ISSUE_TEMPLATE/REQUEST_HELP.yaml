@@ -37,12 +37,12 @@ body:
       description: 'Is this project bound to a specific time frame?'
   - type: textarea
     attributes:
-      label: Describe the problem
-      description: "State the problem you're facing as clearly as possible and the reach of it."
+      label: 'Problem statement'
+      description: "Describe the problem you are facing as clearly as possible and the reach of it."
   - type: textarea
     attributes:
       label: 'Goals and objectives'
-      description: 'what is your desired outcome? What would success look like for your project?'
+      description: 'What is your desired outcome? What would success look like?'
   - type: textarea
     attributes:
       label: 'Requirements'
